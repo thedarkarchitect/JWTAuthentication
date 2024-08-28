@@ -17,7 +17,8 @@ import java.util.function.Function;
 @Component
 public class JWTUtil {
     private static Key getSigningKey() {
-        String SECRET = System.getenv("SECRET"); //this takes a secret of 256bits which is in base10 cause of HMCA Sha algorithm
+         String SECRET = System.getenv("SECRET");
+        //this takes a secret of 256bits which is in base10 cause of HMCA Sha algorithm
         byte[] keyBytes = Decoders.BASE64.decode(SECRET); //decode the secret to base64 using the Decorders class
         return Keys.hmacShaKeyFor(keyBytes); //this the key
     }
@@ -40,7 +41,8 @@ public class JWTUtil {
     }
 
     private boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());//this will return a boolean if the token is expired or not
+        long leeway = 1000*60*5;
+        return extractExpiration(token).before(new Date(System.currentTimeMillis() - leeway));//this will return a boolean if the token is expired or not
     }
 
     public boolean isTokenValid(String token) {
